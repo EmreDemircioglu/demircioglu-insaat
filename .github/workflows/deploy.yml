@@ -11,30 +11,12 @@ permissions:
   contents: write
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out code
         uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: |
-          docker build -t react-app:latest .
-
-      - name: Create container from Docker image
-        run: |
-          docker create --name react_build_container react-app:latest
-
-      - name: Copy out the build folder
-        run: docker cp react_build_container:/app/dist ./dist
-
-      - name: Remove container
-        run: docker rm react_build_container
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages        # Branch to push build artifacts
-          folder: dist           # Path to your React build folder
+        run: docker build -t react-app:latest .
           
