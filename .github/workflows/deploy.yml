@@ -9,7 +9,6 @@ on:
   
 permissions:
   contents: write
-  name: Build with Docker and Deploy to GitHub Pages
 
 jobs:
   build-and-deploy:
