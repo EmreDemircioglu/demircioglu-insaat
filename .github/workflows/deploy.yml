@@ -9,28 +9,33 @@ on:
   
 permissions:
   contents: write
-  
+  name: Build with Docker and Deploy to GitHub Pages
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out the repository
+      - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Use Node.js 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies and build
+      - name: Build Docker image
         run: |
-          npm install
-          npm run build
+          docker build -t react-app:latest .
+
+      - name: Create container from Docker image
+        run: |
+          docker create --name react_build_container react-app:latest
+
+      - name: Copy out the build folder
+        run: docker cp react_build_container:/app/dist ./dist
+
+      - name: Remove container
+        run: docker rm react_build_container
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages      # Branch where the built files will go
-          folder: dist         # Folder with the final build output
+          branch: gh-pages        # Branch to push build artifacts
+          folder: dist           # Path to your React build folder
           
