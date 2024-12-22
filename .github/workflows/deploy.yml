@@ -1,8 +1,10 @@
-name: Build with Docker and Deploy to GitHub Pages
+name: Deploy React App to GitHub Pages
 
 on:
+  # Triggers the workflow on push events to the main branch
   push:
     branches: [ "master" ]
+  # Allows you to run the workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -10,26 +12,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
+      - name: Check out the repository
         uses: actions/checkout@v3
 
-      - name: Build Docker image
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies and build
         run: |
-          docker build -t react-app:latest .
-
-      - name: Create container from Docker image
-        run: |
-          docker create --name react_build_container react-app:latest
-
-      - name: Copy out the build folder
-        run: docker cp react_build_container:/app/build ./build
-
-      - name: Remove container
-        run: docker rm react_build_container
+          npm install
+          npm run build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages        # Branch to push build artifacts
-          folder: build           # Path to your React build folder
+          branch: gh-pages      # Branch where the built files will go
+          folder: build         # Folder with the final build output
           
