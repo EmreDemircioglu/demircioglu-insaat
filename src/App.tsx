@@ -8,7 +8,7 @@ import ServicesSection from "./components/ServicesSection";
 const App = () => {
   // Add Toolbar offset so hero doesn't go under navbar
   return (
-    <Router>
+    <Router basename="/demircioglu-insaat">
       <Navbar />
       <Routes>
         <Route
